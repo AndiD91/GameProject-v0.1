@@ -96,14 +96,14 @@ bool LoadContent();
 void UnloadContent();
 
 
-void Update( float deltaTime );
+void Update( const FLOAT deltaTime );
 void Render();
 void Cleanup();
 
 /**
  * Initialize the application window.
  */
-int InitApplication( HINSTANCE hInstance, int cmdShow )
+int InitApplication( const HINSTANCE hInstance, const INT cmdShow )
 {
     WNDCLASSEX wndClass = {0};
     wndClass.cbSize = sizeof( WNDCLASSEX );
@@ -143,7 +143,7 @@ int InitApplication( HINSTANCE hInstance, int cmdShow )
 
 // This function was inspired by:
 // http://www.rastertek.com/dx11tut03.html
-DXGI_RATIONAL QueryRefreshRate( UINT screenWidth, UINT screenHeight, BOOL vsync )
+DXGI_RATIONAL QueryRefreshRate( const UINT screenWidth, const UINT screenHeight, const BOOL vsync )
 {
     DXGI_RATIONAL refreshRate = { 0, 1 };
     if ( vsync )
@@ -234,7 +234,7 @@ DXGI_RATIONAL QueryRefreshRate( UINT screenWidth, UINT screenHeight, BOOL vsync 
 /** 
  * Initialize the DirectX device and swap chain.
  */
-int InitDirectX( HINSTANCE hInstance, BOOL vSync )
+int InitDirectX( const HINSTANCE hInstance, const BOOL vSync )
 {
     // A window handle must have been created already.
     assert( g_WindowHandle != 0 );
@@ -244,8 +244,8 @@ int InitDirectX( HINSTANCE hInstance, BOOL vSync )
 
     // Compute the exact client dimensions. This will be used
     // to initialize the render targets for our swap chain.
-    unsigned int clientWidth = clientRect.right - clientRect.left;
-    unsigned int clientHeight = clientRect.bottom - clientRect.top;
+    UINT clientWidth = clientRect.right - clientRect.left;
+    UINT clientHeight = clientRect.bottom - clientRect.top;
 
     DXGI_SWAP_CHAIN_DESC swapChainDesc;
     ZeroMemory( &swapChainDesc, sizeof(DXGI_SWAP_CHAIN_DESC) );
@@ -382,8 +382,8 @@ int InitDirectX( HINSTANCE hInstance, BOOL vSync )
     }
 
     // Initialize the viewport to occupy the entire client area.
-    g_Viewport.Width = static_cast<float>(clientWidth);
-    g_Viewport.Height = static_cast<float>(clientHeight);
+    g_Viewport.Width = static_cast<FLOAT>(clientWidth);
+    g_Viewport.Height = static_cast<FLOAT>(clientHeight);
 	
     g_Viewport.TopLeftX = 0.0f;
     g_Viewport.TopLeftY = 0.0f;
@@ -490,8 +490,8 @@ if ( FAILED( hr ) )
 
     // Compute the exact client dimensions.
     // This is required for a correct projection matrix.
-    float clientWidth = static_cast<float>( clientRect.right - clientRect.left );
-    float clientHeight = static_cast<float>( clientRect.bottom - clientRect.top );
+    FLOAT clientWidth = static_cast<FLOAT>( clientRect.right - clientRect.left );
+    FLOAT clientHeight = static_cast<FLOAT>( clientRect.bottom - clientRect.top );
 
     g_ProjectionMatrix = XMMatrixPerspectiveFovLH( XMConvertToRadians(45.0f), clientWidth/clientHeight, 0.1f, 100.0f );
 
@@ -679,8 +679,8 @@ int Run()
     MSG msg = {0};
 
     static DWORD previousTime = timeGetTime();
-    static const float targetFramerate = 30.0f;
-    static const float maxTimeStep = 1.0f / targetFramerate;
+    static const FLOAT targetFramerate = 30.0f;
+    static const FLOAT maxTimeStep = 1.0f / targetFramerate;
 
     while ( msg.message != WM_QUIT )
     {
@@ -692,7 +692,7 @@ int Run()
         else
         {
             DWORD currentTime = timeGetTime();
-            float deltaTime = ( currentTime - previousTime ) / 1000.0f;
+            FLOAT deltaTime = ( currentTime - previousTime ) / 1000.0f;
             previousTime = currentTime;
 
             // Cap the delta time to the max time step (useful if your 
@@ -770,7 +770,7 @@ LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-void Update(  float deltaTime )
+void Update( const FLOAT deltaTime )
 {
     XMVECTOR eyePosition = XMVectorSet( 0, 0, -10, 1 );
     XMVECTOR focusPoint = XMVectorSet( 0, 0, 0, 1 );
@@ -779,7 +779,7 @@ void Update(  float deltaTime )
     g_d3dDeviceContext->UpdateSubresource( g_d3dConstantBuffers[CB_Frame], 0, nullptr, &g_ViewMatrix, 0, 0 );
 
 
-    static float angle = 0.0f;
+    static FLOAT angle = 0.0f;
     angle += 90.0f * deltaTime;
     XMVECTOR rotationAxis = XMVectorSet( 0, 1, 1, 0 );
     
@@ -788,13 +788,13 @@ void Update(  float deltaTime )
 }
 
 // Clear the color and depth buffers.
-void Clear( const FLOAT clearColor[4], FLOAT clearDepth, UINT8 clearStencil )
+void Clear( const FLOAT clearColor[4], const FLOAT clearDepth, const UINT8 clearStencil )
 {
     g_d3dDeviceContext->ClearRenderTargetView( g_d3dRenderTargetView, clearColor );
     g_d3dDeviceContext->ClearDepthStencilView( g_d3dDepthStencilView, D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, clearDepth, clearStencil );
 }
 
-void Present( bool vSync )
+void Present( const BOOL vSync )
 {
     if ( vSync )
     {
