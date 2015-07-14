@@ -10,9 +10,70 @@ HWND g_WindowHandle = 0;
 
 Engine engine;
 
-// Forward declarations.
-LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
-int Run();
+
+
+WINDOWPLACEMENT g_wpPrev = { sizeof(g_wpPrev) };
+
+void SetFullscreen(HWND hwnd, int x, int y, UINT keyFlags)
+{
+	DWORD dwStyle = GetWindowLong(hwnd, GWL_STYLE);
+	if (dwStyle & WS_OVERLAPPEDWINDOW) {
+		MONITORINFO mi = { sizeof(mi) };
+		if (GetWindowPlacement(hwnd, &g_wpPrev) &&
+			GetMonitorInfo(MonitorFromWindow(hwnd,
+			MONITOR_DEFAULTTOPRIMARY), &mi)) {
+			SetWindowLong(hwnd, GWL_STYLE,
+				dwStyle & ~WS_OVERLAPPEDWINDOW);
+			SetWindowPos(hwnd, HWND_TOP,
+				mi.rcMonitor.left, mi.rcMonitor.top,
+				mi.rcMonitor.right - mi.rcMonitor.left,
+				mi.rcMonitor.bottom - mi.rcMonitor.top,
+				SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
+		}
+	}
+	else {
+		SetWindowLong(hwnd, GWL_STYLE,
+			dwStyle | WS_OVERLAPPEDWINDOW);
+		SetWindowPlacement(hwnd, &g_wpPrev);
+		SetWindowPos(hwnd, NULL, 0, 0, 0, 0,
+			SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER |
+			SWP_NOOWNERZORDER | SWP_FRAMECHANGED);
+	}
+}
+
+
+LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	PAINTSTRUCT paintStruct;
+	HDC hDC;
+
+	switch (message)
+	{
+	case WM_PAINT:
+	{
+		hDC = BeginPaint(hwnd, &paintStruct);
+		EndPaint(hwnd, &paintStruct);
+	}
+	case WM_KEYDOWN:
+		if (wParam == VK_F11)
+		{
+			SetFullscreen(hwnd,0,0,0);
+			return 0L;
+		}
+	break;
+	case WM_DESTROY:
+	{
+		PostQuitMessage(0);
+	}
+	break;
+	default:
+		return DefWindowProc(hwnd, message, wParam, lParam);
+	}
+
+	return 0;
+}
+
+
 
 /**
  * Initialize the application window.
@@ -55,64 +116,6 @@ int InitApplication( const HINSTANCE hInstance, const INT cmdShow )
     return 0;
 }
 
-
-
-int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE prevInstance, LPWSTR cmdLine, int cmdShow )
-{
-    UNREFERENCED_PARAMETER( prevInstance );
-    UNREFERENCED_PARAMETER( cmdLine );
-
-    // Check for DirectX Math library support.
-    if ( !DirectX::XMVerifyCPUSupport() )
-    {
-        MessageBox( nullptr, TEXT("Failed to verify DirectX Math library support."), TEXT("Error"), MB_OK );
-        return -1;
-    }
-
-    if( InitApplication(hInstance, cmdShow) != 0 )
-    {
-        MessageBox( nullptr, TEXT("Failed to create applicaiton window."), TEXT("Error"), MB_OK );
-        return -1;
-    }
-
-	engine.initEngine(hInstance, g_WindowHandle);
-    
-
-    int returnCode = Run();
-
-	engine.Clear(DirectX::Colors::CornflowerBlue, 1.0f, 0);
-	engine.Cleanup();
-
-    return returnCode;
-}
-
-LRESULT CALLBACK WndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
-{
-    PAINTSTRUCT paintStruct;
-    HDC hDC;
-
-    switch ( message )
-    {
-    case WM_PAINT:
-        {
-            hDC = BeginPaint( hwnd, &paintStruct );
-            EndPaint( hwnd, &paintStruct );
-        }
-        break;
-    case WM_DESTROY:
-        {
-            PostQuitMessage( 0 );
-        }
-        break;
-    default: 
-        return DefWindowProc( hwnd, message, wParam, lParam );
-    }
-
-    return 0;
-}
-
-
-
 /**
 * The main application loop. Window Message Loop
 */
@@ -148,4 +151,37 @@ int Run()
 
 	return static_cast<int>(msg.wParam);
 }
+
+int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE prevInstance, LPWSTR cmdLine, int cmdShow )
+{
+	
+
+    // Check for DirectX Math library support.
+    if ( !DirectX::XMVerifyCPUSupport() )
+    {
+        MessageBox( nullptr, TEXT("Failed to verify DirectX Math library support."), TEXT("Error"), MB_OK );
+        return -1;
+    }
+
+    if( InitApplication(hInstance, cmdShow) != 0 )
+    {
+        MessageBox( nullptr, TEXT("Failed to create applicaiton window."), TEXT("Error"), MB_OK );
+        return -1;
+    }
+	SetWindowText(g_WindowHandle,"Cambodunum");
+	engine.initEngine(hInstance, g_WindowHandle);
+    
+
+    int returnCode = Run();
+
+	engine.Clear(DirectX::Colors::CornflowerBlue, 1.0f, 0);
+	engine.Cleanup();
+
+    return returnCode;
+}
+
+
+
+
+
 
