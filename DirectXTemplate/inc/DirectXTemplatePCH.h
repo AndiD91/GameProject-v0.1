@@ -1,3 +1,4 @@
+#pragma once
 // System includes
 #include <windows.h>
 
