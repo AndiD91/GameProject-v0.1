@@ -14,7 +14,7 @@ Engine engine;
 
 WINDOWPLACEMENT g_wpPrev = { sizeof(g_wpPrev) };
 
-void SetFullscreen(HWND hwnd, int x, int y, UINT keyFlags)
+void SetFullscreen(HWND hwnd, INT x, INT y, UINT keyFlags)
 {
 	DWORD dwStyle = GetWindowLong(hwnd, GWL_STYLE);
 	if (dwStyle & WS_OVERLAPPEDWINDOW) {
@@ -60,6 +60,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 			SetFullscreen(hwnd,0,0,0);
 			return 0L;
 		}
+
 	break;
 	case WM_DESTROY:
 	{
@@ -112,6 +113,8 @@ int InitApplication( const HINSTANCE hInstance, const INT cmdShow )
 
     ShowWindow( g_WindowHandle, cmdShow );
     UpdateWindow( g_WindowHandle );
+	SetForegroundWindow(g_WindowHandle);
+	SetFocus(g_WindowHandle);
 
     return 0;
 }
@@ -119,12 +122,12 @@ int InitApplication( const HINSTANCE hInstance, const INT cmdShow )
 /**
 * The main application loop. Window Message Loop
 */
-int Run()
+INT Run()
 {
 	MSG msg = { 0 };
 
 	static DWORD previousTime = timeGetTime();
-	static const FLOAT targetFramerate = 30.0f;
+	static const FLOAT targetFramerate = 60.0f;
 	static const FLOAT maxTimeStep = 1.0f / targetFramerate;
 
 	while (msg.message != WM_QUIT)
@@ -149,30 +152,26 @@ int Run()
 		}
 	}
 
-	return static_cast<int>(msg.wParam);
+	return static_cast<INT>(msg.wParam);
 }
 
-int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE prevInstance, LPWSTR cmdLine, int cmdShow )
+INT WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE prevInstance, LPWSTR cmdLine, INT cmdShow )
 {
 	
-
-    // Check for DirectX Math library support.
-    if ( !DirectX::XMVerifyCPUSupport() )
-    {
-        MessageBox( nullptr, TEXT("Failed to verify DirectX Math library support."), TEXT("Error"), MB_OK );
-        return -1;
-    }
-
     if( InitApplication(hInstance, cmdShow) != 0 )
     {
         MessageBox( nullptr, TEXT("Failed to create applicaiton window."), TEXT("Error"), MB_OK );
         return -1;
     }
-	SetWindowText(g_WindowHandle,"Cambodunum");
-	engine.initEngine(hInstance, g_WindowHandle);
+	//SetWindowText(g_WindowHandle,"Cambodunum");
+	if(!engine.initEngine(hInstance, g_WindowHandle,Engine::DIRECTX))
+	{
+		MessageBox(nullptr, TEXT("Failed to init Engine."), TEXT("Error"), MB_OK);
+		return -1;
+	}
     
 
-    int returnCode = Run();
+    INT returnCode = Run();
 
 	engine.Clear(DirectX::Colors::CornflowerBlue, 1.0f, 0);
 	engine.Cleanup();

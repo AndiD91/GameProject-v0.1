@@ -2,19 +2,27 @@
 #include "Engine.h"
 #include <SimpleVertexShader.h>
 #include <SimplePixelShader.h>
-
+#include "Cube.h"
+#include "Material.h"
 using namespace DirectX;
 
+
+
+
+
 Engine::Engine()
+	:eyePosition(XMVectorSet(0, 0, -10, 1)),
+	focusPoint(XMVectorSet(0, 0, 0, 1)),
+	upDirection(XMVectorSet(0, 1, 0, 0))
 {
-	g_Vertices.push_back(VertexPosColor(DirectX::XMFLOAT3(-1.0f, -1.0f, -1.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f))); // 0
-	g_Vertices.push_back(VertexPosColor(DirectX::XMFLOAT3(-1.0f, 1.0f, -1.0f), DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f))); // 1
-	g_Vertices.push_back(VertexPosColor(DirectX::XMFLOAT3(1.0f, 1.0f, -1.0f), DirectX::XMFLOAT3(1.0f, 1.0f, 0.0f))); // 2
-	g_Vertices.push_back(VertexPosColor(DirectX::XMFLOAT3(1.0f, -1.0f, -1.0f), DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f))); // 3
-	g_Vertices.push_back(VertexPosColor(DirectX::XMFLOAT3(-1.0f, -1.0f, 1.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f))); // 4
-	g_Vertices.push_back(VertexPosColor(DirectX::XMFLOAT3(-1.0f, 1.0f, 1.0f), DirectX::XMFLOAT3(0.0f, 1.0f, 1.0f))); // 5
-	g_Vertices.push_back(VertexPosColor(DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f), DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f))); // 6
-	g_Vertices.push_back(VertexPosColor(DirectX::XMFLOAT3(1.0f, -1.0f, 1.0f), DirectX::XMFLOAT3(1.0f, 0.0f, 1.0f)));  // 7
+	g_Vertices.emplace_back(Vertex(DirectX::XMFLOAT3(-1.0f, -1.0f, -1.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f))); // 0
+	g_Vertices.emplace_back(Vertex(DirectX::XMFLOAT3(-1.0f, 1.0f, -1.0f), DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f))); // 1
+	g_Vertices.emplace_back(Vertex(DirectX::XMFLOAT3(1.0f, 1.0f, -1.0f), DirectX::XMFLOAT3(1.0f, 1.0f, 0.0f))); // 2
+	g_Vertices.emplace_back(Vertex(DirectX::XMFLOAT3(1.0f, -1.0f, -1.0f), DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f))); // 3
+	g_Vertices.emplace_back(Vertex(DirectX::XMFLOAT3(-1.0f, -1.0f, 1.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f))); // 4
+	g_Vertices.emplace_back(Vertex(DirectX::XMFLOAT3(-1.0f, 1.0f, 1.0f), DirectX::XMFLOAT3(0.0f, 1.0f, 1.0f))); // 5
+	g_Vertices.emplace_back(Vertex(DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f), DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f))); // 6
+	g_Vertices.emplace_back(Vertex(DirectX::XMFLOAT3(1.0f, -1.0f, 1.0f), DirectX::XMFLOAT3(1.0f, 0.0f, 1.0f)));  // 7
 
 	g_Indicies.push_back(0);
 	g_Indicies.push_back(1);
@@ -57,8 +65,10 @@ Engine::Engine()
 	g_Indicies.push_back(4);
 	g_Indicies.push_back(3);
 	g_Indicies.push_back(7);
-		
-		
+
+	Material material;
+	
+	
 }
 
 
@@ -68,7 +78,7 @@ Engine::~Engine()
 
 // This function was inspired by:
 // http://www.rastertek.com/dx11tut03.html
-DXGI_RATIONAL Engine::QueryRefreshRate(const UINT screenWidth, const UINT screenHeight, const BOOL vsync)
+const DXGI_RATIONAL& Engine::QueryRefreshRate(const UINT screenWidth, const UINT screenHeight, const BOOL vsync)
 {
 	DXGI_RATIONAL refreshRate = { 0, 1 };
 	if (vsync)
@@ -156,26 +166,50 @@ DXGI_RATIONAL Engine::QueryRefreshRate(const UINT screenWidth, const UINT screen
 	return refreshRate;
 }
 
-BOOL Engine::initEngine(HINSTANCE& hInstance, HWND hwnd)
+const BOOL Engine::initEngine(HINSTANCE& hInstance, HWND hwnd, const Rendertype rendertype)
 {
 	g_WindowHandle = hwnd;
-	if (InitDirectX(hInstance, g_EnableVSync) != 0)
-	{
-		MessageBox(nullptr, TEXT("Failed to create DirectX device and swap chain."), TEXT("Error"), MB_OK);
-		return -1;
-	}
 
-	if (!LoadContent())
+	switch (rendertype)
 	{
-		MessageBox(nullptr, TEXT("Failed to load content."), TEXT("Error"), MB_OK);
-		return -1;
+	case DIRECTX:
+	{
+		// Check for DirectX Math library support.
+		if (!DirectX::XMVerifyCPUSupport())
+		{
+			MessageBox(nullptr, TEXT("Failed to verify DirectX Math library support."), TEXT("Error"), MB_OK);
+			return false;
+		}
+
+		if (InitDirectX(hInstance, g_EnableVSync) != 0)
+		{
+			MessageBox(nullptr, TEXT("Failed to create DirectX device and swap chain."), TEXT("Error"), MB_OK);
+			return false;
+		}
+
+		if (!LoadContent())
+		{
+			MessageBox(nullptr, TEXT("Failed to load content."), TEXT("Error"), MB_OK);
+			return false;
+		}
+		
+		
+	}break;
+	case OPENGL:
+	{
+		MessageBox(nullptr, TEXT("OPENGL is not yet implemented"), TEXT("Error"), MB_OK);
+		return false;
 	}
+		
+	};
+
+	return true;
 }
 
 /**
 * Initialize the DirectX device and swap chain.
 */
-int Engine::InitDirectX(const HINSTANCE hInstance, const BOOL vSync)
+const int Engine::InitDirectX(const HINSTANCE hInstance, const BOOL vSync)
 {
 	// A window handle must have been created already.
 	assert(g_WindowHandle != 0);
@@ -334,7 +368,7 @@ int Engine::InitDirectX(const HINSTANCE hInstance, const BOOL vSync)
 	return 0;
 }
 
-bool Engine::LoadContent()
+const BOOL Engine::LoadContent()
 {
 	assert(g_d3dDevice);
 
@@ -343,7 +377,7 @@ bool Engine::LoadContent()
 	ZeroMemory(&vertexBufferDesc, sizeof(D3D11_BUFFER_DESC));
 
 	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	vertexBufferDesc.ByteWidth = sizeof(VertexPosColor) * g_Vertices.size();
+	vertexBufferDesc.ByteWidth = sizeof(Vertex) * g_Vertices.size();
 	vertexBufferDesc.CPUAccessFlags = 0;
 	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 
@@ -444,7 +478,7 @@ bool Engine::LoadContent()
 
 
 
-std::string Engine::GetLatestVertexProfile()
+const std::string& Engine::GetLatestVertexProfile()
 {
 	assert(g_d3dDevice);
 
@@ -485,7 +519,7 @@ std::string Engine::GetLatestVertexProfile()
 	return "";
 }
 
-std::string Engine::GetLatestPixelProfile()
+const std::string& Engine::GetLatestPixelProfile()
 {
 	assert(g_d3dDevice);
 
@@ -595,15 +629,14 @@ ShaderClass* Engine::LoadShader(const std::wstring& fileName, const std::string&
 
 void Engine::Update(const FLOAT deltaTime)
 {
-	XMVECTOR eyePosition = XMVectorSet(0, 0, -10, 1);
-	XMVECTOR focusPoint = XMVectorSet(0, 0, 0, 1);
-	XMVECTOR upDirection = XMVectorSet(0, 1, 0, 0);
+	showFPS(deltaTime);
+	
 	g_ViewMatrix = XMMatrixLookAtLH(eyePosition, focusPoint, upDirection);
 	g_d3dDeviceContext->UpdateSubresource(g_d3dConstantBuffers[CB_Frame], 0, nullptr, &g_ViewMatrix, 0, 0);
 
 
 	static FLOAT angle = 0.0f;
-	angle += 90.0f * deltaTime;
+	angle += 100.0f * deltaTime;
 	XMVECTOR rotationAxis = XMVectorSet(0, 1, 1, 0);
 
 	g_WorldMatrix = XMMatrixRotationAxis(rotationAxis, XMConvertToRadians(angle));
@@ -660,6 +693,25 @@ void Engine::Render()
 	Present(g_EnableVSync);
 }
 
+
+void Engine::setVSync(const BOOL  value)
+{
+	g_EnableVSync == value;
+}
+
+void Engine::showFPS(FLOAT deltaTime)
+{
+	static FLOAT time=0;
+	time += deltaTime;
+	if (time > 0.5)
+	{
+		time = 0;
+		INT fps =1 / deltaTime;
+		
+		std::string text = "FPS: " + std::to_string(fps);
+		SetWindowText(g_WindowHandle, text.c_str());
+	}
+}
 
 //Release Com Objects
 void Engine::UnloadContent()
