@@ -1,21 +1,40 @@
 #pragma once
 #include <DirectXTemplatePCH.h>
+#include "Vertex.h"
 #include <vector>
+#include <map>
+#include "Camera.h"
 
 class Engine
 {
 public:
 	Engine();
 	~Engine();
-BOOL initEngine(HINSTANCE& hInstance, HWND hwnd);
+	
+enum Rendertype
+{
+	OPENGL,
+	DIRECTX,
+};
+const BOOL initEngine(HINSTANCE& hInstance, HWND hwnd,const Rendertype rendertype);
 void Cleanup();
 void Clear(const FLOAT clearColor[4], const FLOAT clearDepth, const UINT8 clearStencil);
 void Update(const FLOAT deltaTime);
 void Render();
+void setVSync(const BOOL value);
+
+void setActiveCamera(Camera& camera);
+
 private:
 	
+
+	//DirectX::XMVECTOR eyePosition;
+	//DirectX::XMVECTOR focusPoint;
+	//DirectX::XMVECTOR upDirection;
+	Camera* m_camera;
+
 	HWND g_WindowHandle = nullptr;
-	const BOOL g_EnableVSync = TRUE;
+	BOOL g_EnableVSync = FALSE;
 
 	// Direct3D device and swap chain.
 	ID3D11Device* g_d3dDevice = nullptr;
@@ -57,7 +76,7 @@ private:
 
 	// Demo parameters
 	DirectX::XMMATRIX g_WorldMatrix;
-	DirectX::XMMATRIX g_ViewMatrix;
+	//DirectX::XMMATRIX g_ViewMatrix;
 	DirectX::XMMATRIX g_ProjectionMatrix;
 
 	// Vertex data for a colored cube.
@@ -73,22 +92,22 @@ private:
 		}
 	};
 
-	std::vector<VertexPosColor> g_Vertices;
+	std::vector<Vertex> g_Vertices;
 	std::vector<WORD> g_Indicies;
 
 
-	DXGI_RATIONAL QueryRefreshRate(const UINT screenWidth, const UINT screenHeight, const BOOL vsync);
+	const DXGI_RATIONAL& QueryRefreshRate(const UINT screenWidth, const UINT screenHeight, const BOOL vsync);
 
-	int InitDirectX(const HINSTANCE hInstance, const BOOL vSync);
+	const INT InitDirectX(const HINSTANCE hInstance, const BOOL vSync);
 
 
-	bool LoadContent();
+	const BOOL LoadContent();
 
 
 	// Get the latest profile for the specified shader type.
 	
-	std::string GetLatestVertexProfile();
-	std::string GetLatestPixelProfile();
+	const std::string& GetLatestVertexProfile();
+	const std::string& GetLatestPixelProfile();
 
 
 	
@@ -97,14 +116,15 @@ private:
 
 
 	template< class ShaderClass >
-	ShaderClass* LoadShader(const std::wstring& fileName, const std::string& entryPoint, const std::string& _profile);
+	ShaderClass* LoadShader(const std::wstring& fileName, const std::string& entryPoINT, const std::string& _profile);
 
+	
 
 	//Release Com Objects
 	void UnloadContent();
 
 	
-	
+	void showFPS(const FLOAT deltaTime);
 
 	void Present(const BOOL vSync);
 	
