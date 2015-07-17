@@ -59,6 +59,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 			SetFullscreen(hwnd,0,0,0);
 			return 0L;
 		}
+
 		if (wParam== VK_SPACE)
 		{
 			camera.setPerspective();

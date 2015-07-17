@@ -28,10 +28,9 @@ void setActiveCamera(Camera& camera);
 private:
 	
 
-	//DirectX::XMVECTOR eyePosition;
-	//DirectX::XMVECTOR focusPoint;
-	//DirectX::XMVECTOR upDirection;
+
 	Camera* m_camera;
+
 
 	HWND g_WindowHandle = nullptr;
 	BOOL g_EnableVSync = FALSE;

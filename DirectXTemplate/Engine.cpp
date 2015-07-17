@@ -11,21 +11,16 @@ using namespace DirectX;
 
 
 Engine::Engine()
-{	//:eyePosition(XMVectorSet(0, 0, -10, 1)),
-	//focusPoint(XMVectorSet(0, 0, 0, 1)),
-	//upDirection(XMVectorSet(0, 1, 0, 0))
+{
+	g_Vertices.emplace_back(Vertex(DirectX::XMFLOAT3(-1.0f, -1.0f, -1.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 0.0f))); // 0
+	g_Vertices.emplace_back(Vertex(DirectX::XMFLOAT3(-1.0f, 1.0f, -1.0f), DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f))); // 1
+	g_Vertices.emplace_back(Vertex(DirectX::XMFLOAT3(1.0f, 1.0f, -1.0f), DirectX::XMFLOAT3(1.0f, 1.0f, 0.0f))); // 2
+	g_Vertices.emplace_back(Vertex(DirectX::XMFLOAT3(1.0f, -1.0f, -1.0f), DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f))); // 3
+	g_Vertices.emplace_back(Vertex(DirectX::XMFLOAT3(-1.0f, -1.0f, 1.0f), DirectX::XMFLOAT3(0.0f, 0.0f, 1.0f))); // 4
+	g_Vertices.emplace_back(Vertex(DirectX::XMFLOAT3(-1.0f, 1.0f, 1.0f), DirectX::XMFLOAT3(0.0f, 1.0f, 1.0f))); // 5
+	g_Vertices.emplace_back(Vertex(DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f), DirectX::XMFLOAT3(1.0f, 1.0f, 1.0f))); // 6
+	g_Vertices.emplace_back(Vertex(DirectX::XMFLOAT3(1.0f, -1.0f, 1.0f), DirectX::XMFLOAT3(1.0f, 0.0f, 1.0f)));  // 7
 
-
-	
-
-	g_Vertices.emplace_back(Vertex(XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f))); // 0
-	g_Vertices.emplace_back(Vertex(XMFLOAT3(-1.0f, 1.0f, -1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f))); // 1
-	g_Vertices.emplace_back(Vertex(XMFLOAT3(1.0f, 1.0f, -1.0f), XMFLOAT3(1.0f, 1.0f, 0.0f))); // 2
-	g_Vertices.emplace_back(Vertex(XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT3(1.0f, 0.0f, 0.0f))); // 3
-	g_Vertices.emplace_back(Vertex(XMFLOAT3(-1.0f, -1.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f))); // 4
-	g_Vertices.emplace_back(Vertex(XMFLOAT3(-1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 1.0f))); // 5
-	g_Vertices.emplace_back(Vertex(XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(1.0f, 1.0f, 1.0f))); // 6
-	g_Vertices.emplace_back(Vertex(XMFLOAT3(1.0f, -1.0f, 1.0f), XMFLOAT3(1.0f, 0.0f, 1.0f)));  // 7
 
 	g_Indicies.push_back(0);
 	g_Indicies.push_back(1);
@@ -68,7 +63,6 @@ Engine::Engine()
 	g_Indicies.push_back(4);
 	g_Indicies.push_back(3);
 	g_Indicies.push_back(7);
-
 	
 	
 }
@@ -177,7 +171,8 @@ const BOOL Engine::initEngine(HINSTANCE& hInstance, HWND hwnd, const Rendertype 
 	case DIRECTX:
 	{
 		// Check for DirectX Math library support.
-		if (!XMVerifyCPUSupport())
+
+		if (!DirectX::XMVerifyCPUSupport())
 		{
 			MessageBox(nullptr, TEXT("Failed to verify DirectX Math library support."), TEXT("Error"), MB_OK);
 			return false;
@@ -633,10 +628,12 @@ ShaderClass* Engine::LoadShader(const std::wstring& fileName, const std::string&
 void Engine::Update(const FLOAT deltaTime)
 {
 	showFPS(deltaTime);
+
 	m_camera->update();
 	g_d3dDeviceContext->UpdateSubresource(g_d3dConstantBuffers[CB_Appliation], 0, nullptr, &m_camera->getProjectionMatrix(), 0, 0);
 	//g_ViewMatrix = XMMatrixLookAtLH(eyePosition, focusPoint, upDirection);
 	g_d3dDeviceContext->UpdateSubresource(g_d3dConstantBuffers[CB_Frame], 0, nullptr, &m_camera->getViewMatrix(), 0, 0);
+
 
 
 	static FLOAT angle = 0.0f;
@@ -717,10 +714,12 @@ void Engine::showFPS(FLOAT deltaTime)
 	}
 }
 
+
 void Engine::setActiveCamera(Camera& camera)
 {
 	m_camera = &camera;
 }
+
 
 //Release Com Objects
 void Engine::UnloadContent()
