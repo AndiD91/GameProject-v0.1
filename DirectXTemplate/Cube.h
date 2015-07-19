@@ -10,13 +10,13 @@ public:
 	Cube(const FLOAT width, const FLOAT height, const FLOAT depth, const DirectX::XMFLOAT3& position, const Material& material);
 	~Cube();
 
-const FLOAT getWidth();
+FLOAT getWidth();
 	void setWidth(const FLOAT value);
 
-	const FLOAT getHeight();
+	FLOAT getHeight();
 	void setHeight(const FLOAT value);
 
-	const FLOAT getDepth();
+	 FLOAT getDepth();
 	void setDepth(const FLOAT value);
 
 	const DirectX::XMFLOAT3& getPosition();
@@ -36,7 +36,7 @@ private:
 	Material m_material;
 
 	std::vector<WORD> g_indicies;
-	
+	DirectX::XMMATRIX m_WorldMatrix;
 
 };
 

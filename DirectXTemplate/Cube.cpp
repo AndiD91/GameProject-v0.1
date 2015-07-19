@@ -24,7 +24,7 @@ Cube::~Cube()
 }
 
 
-const FLOAT Cube::getWidth()
+FLOAT Cube::getWidth()
 {
 	return m_width;
 }
@@ -33,7 +33,7 @@ void Cube::setWidth(const FLOAT value)
 	m_width = value;
 }
 
-const FLOAT Cube::getHeight()
+FLOAT Cube::getHeight()
 {
 	return m_height;
 }
@@ -42,7 +42,7 @@ void Cube::setHeight(const FLOAT value)
 	m_height = value;
 }
 
-const FLOAT Cube::getDepth()
+FLOAT Cube::getDepth()
 {
 	return m_depth;
 }

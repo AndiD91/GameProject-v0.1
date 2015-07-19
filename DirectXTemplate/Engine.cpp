@@ -580,49 +580,6 @@ ID3D11PixelShader* Engine::CreatePixelShader(ID3DBlob* pShaderBlob, ID3D11ClassL
 	return pPixelShader;
 }
 
-template<class ShaderClass>
-ShaderClass* Engine::LoadShader(const std::wstring& fileName, const std::string& entryPoint, const std::string& _profile)
-{
-	ID3DBlob* pShaderBlob = nullptr;
-	ID3DBlob* pErrorBlob = nullptr;
-	ShaderClass* pShader = nullptr;
-
-	std::string profile = _profile;
-	if (profile == "latest")
-	{
-		profile = GetLatestProfile<ShaderClass>();
-	}
-
-	UINT flags = D3DCOMPILE_ENABLE_STRICTNESS;
-#if _DEBUG
-	flags |= D3DCOMPILE_DEBUG;
-#endif
-
-	HRESULT hr = D3DCompileFromFile(fileName.c_str(), nullptr,
-		D3D_COMPILE_STANDARD_FILE_INCLUDE, entryPoint.c_str(), profile.c_str(),
-		flags, 0, &pShaderBlob, &pErrorBlob);
-
-	if (FAILED(hr))
-	{
-		if (pErrorBlob)
-		{
-			std::string errorMessage = (char*)pErrorBlob->GetBufferPointer();
-			OutputDebugStringA(errorMessage.c_str());
-
-			SafeRelease(pShaderBlob);
-			SafeRelease(pErrorBlob);
-		}
-
-		return false;
-	}
-
-	pShader = CreateShader<ShaderClass>(pShaderBlob, nullptr);
-
-	SafeRelease(pShaderBlob);
-	SafeRelease(pErrorBlob);
-
-	return pShader;
-}
 
 
 void Engine::Update(const FLOAT deltaTime)
@@ -745,3 +702,49 @@ void Engine::Cleanup()
 	SafeRelease(g_d3dDeviceContext);
 	SafeRelease(g_d3dDevice);
 }
+
+
+
+//template<class ShaderClass>
+//ShaderClass* Engine::LoadShader(const std::wstring& fileName, const std::string& entryPoint, const std::string& _profile)
+//{
+//	ID3DBlob* pShaderBlob = nullptr;
+//	ID3DBlob* pErrorBlob = nullptr;
+//	ShaderClass* pShader = nullptr;
+//
+//	std::string profile = _profile;
+//	if (profile == "latest")
+//	{
+//		profile = GetLatestProfile<ShaderClass>();
+//	}
+//
+//	UINT flags = D3DCOMPILE_ENABLE_STRICTNESS;
+//#if _DEBUG
+//	flags |= D3DCOMPILE_DEBUG;
+//#endif
+//
+//	HRESULT hr = D3DCompileFromFile(fileName.c_str(), nullptr,
+//		D3D_COMPILE_STANDARD_FILE_INCLUDE, entryPoint.c_str(), profile.c_str(),
+//		flags, 0, &pShaderBlob, &pErrorBlob);
+//
+//	if (FAILED(hr))
+//	{
+//		if (pErrorBlob)
+//		{
+//			std::string errorMessage = static_cast<char*>(pErrorBlob->GetBufferPointer());
+//			OutputDebugStringA(errorMessage.c_str());
+//
+//			SafeRelease(pShaderBlob);
+//			SafeRelease(pErrorBlob);
+//		}
+//
+//		return false;
+//	}
+//
+//	pShader = CreateShader<ShaderClass>(pShaderBlob, nullptr);
+//
+//	SafeRelease(pShaderBlob);
+//	SafeRelease(pErrorBlob);
+//
+//	return pShader;
+//}

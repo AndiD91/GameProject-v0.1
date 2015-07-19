@@ -1,6 +1,7 @@
 #include <DirectXTemplatePCH.h>
 #include "../resource.h"
 #include "../Engine.h"
+#include "../Game.h"
 
 const LONG g_WindowWidth = 1280;
 const LONG g_WindowHeight = 720;
@@ -8,10 +9,10 @@ LPCSTR g_WindowClassName = "DirectXWindowClass";
 LPCSTR g_WindowName = "DirectX Template";
 HWND g_WindowHandle = 0;
 
-Engine engine;
-Camera camera;
-
 WINDOWPLACEMENT g_wpPrev = { sizeof(g_wpPrev) };
+
+Engine* engine;
+Game* game;
 
 void SetFullscreen(HWND hwnd, INT x, INT y, UINT keyFlags)
 {
@@ -60,14 +61,14 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 			return 0L;
 		}
 
-		if (wParam== VK_SPACE)
-		{
-			camera.setPerspective();
-		}
-		if (wParam == VK_SHIFT)
-		{
-			camera.setOrthographic();
-		}
+		//if (wParam== VK_SPACE)
+		//{
+		//	camera.setPerspective();
+		//}
+		//if (wParam == VK_SHIFT)
+		//{
+		//	camera.setOrthographic();
+		//}
 
 	break;
 	case WM_DESTROY:
@@ -155,8 +156,8 @@ INT Run()
 			// debugging and you don't want the deltaTime value to explode.
 			deltaTime = fmin(deltaTime, maxTimeStep);
 
-			engine.Update(deltaTime);
-			engine.Render();
+			game->tick(deltaTime);
+			engine->Render();
 		}
 	}
 
@@ -172,33 +173,17 @@ INT WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE prevInstance, LPWSTR cmdLine
         return -1;
     }
 
-
-	// Setup the projection matrix.
-	RECT clientRect;
-	GetClientRect(g_WindowHandle, &clientRect);
-
-	// Compute the exact client dimensions.
-	// This is required for a correct projection matrix.
-	FLOAT clientWidth = static_cast<FLOAT>(clientRect.right - clientRect.left);
-	FLOAT clientHeight = static_cast<FLOAT>(clientRect.bottom - clientRect.top);
-
-	 camera = Camera(DirectX::XMVectorSet(0, 0, -10, 1), DirectX::XMVectorSet(0, 0, 0, 1), DirectX::XMVectorSet(0, 1, 0, 0), clientWidth / clientHeight, DirectX::XMConvertToRadians(45), 0.1F, 100.0F);
-	
-	engine.setActiveCamera(camera);
-	
+	engine = new Engine();
+	game = new Game(g_WindowHandle, hInstance, engine);
 
 	//SetWindowText(g_WindowHandle,"Cambodunum");
-	if(!engine.initEngine(hInstance, g_WindowHandle,Engine::DIRECTX))
-	{
-		MessageBox(nullptr, TEXT("Failed to init Engine."), TEXT("Error"), MB_OK);
-		return -1;
-	}
-
 	
     INT returnCode = Run();
 
-	engine.Clear(DirectX::Colors::CornflowerBlue, 1.0f, 0);
-	engine.Cleanup();
+	engine->Clear(DirectX::Colors::CornflowerBlue, 1.0f, 0);
+	engine->Cleanup();
+	delete game;
+	delete engine;
 
     return returnCode;
 }

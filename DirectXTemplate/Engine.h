@@ -27,8 +27,6 @@ void setActiveCamera(Camera& camera);
 
 private:
 	
-
-
 	Camera* m_camera;
 
 
@@ -75,8 +73,6 @@ private:
 
 	// Demo parameters
 	DirectX::XMMATRIX g_WorldMatrix;
-	//DirectX::XMMATRIX g_ViewMatrix;
-	DirectX::XMMATRIX g_ProjectionMatrix;
 
 	// Vertex data for a colored cube.
 	struct VertexPosColor
@@ -114,11 +110,6 @@ private:
 	ID3D11PixelShader* CreatePixelShader(ID3DBlob* pShaderBlob, ID3D11ClassLinkage* pClassLinkage);
 
 
-	template< class ShaderClass >
-	ShaderClass* LoadShader(const std::wstring& fileName, const std::string& entryPoINT, const std::string& _profile);
-
-	
-
 	//Release Com Objects
 	void UnloadContent();
 
@@ -127,4 +118,7 @@ private:
 
 	void Present(const BOOL vSync);
 	
+
+	/*template< class ShaderClass >
+	ShaderClass* LoadShader(const std::wstring& fileName, const std::string& entryPoINT, const std::string& _profile);*/
 };
