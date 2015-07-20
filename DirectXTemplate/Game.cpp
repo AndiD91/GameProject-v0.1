@@ -6,6 +6,7 @@ Game::Game()
 {
 }
 
+
 Game::Game(HWND hwnd, HINSTANCE hInstance, Engine* engine) :theEngine(engine)
 {
 	// Setup the projection matrix.
@@ -17,7 +18,7 @@ Game::Game(HWND hwnd, HINSTANCE hInstance, Engine* engine) :theEngine(engine)
 	FLOAT clientWidth = static_cast<FLOAT>(clientRect.right - clientRect.left);
 	FLOAT clientHeight = static_cast<FLOAT>(clientRect.bottom - clientRect.top);
 
-	camera =  Camera(DirectX::XMVectorSet(0, 0, -10, 1), DirectX::XMVectorSet(0, 0, 0, 1), DirectX::XMVectorSet(0, 1, 0, 0), clientWidth / clientHeight, DirectX::XMConvertToRadians(45), 0.1F, 100.0F);
+	camera=Camera(DirectX::XMVectorSet(0, 0, -10, 1), DirectX::XMVectorSet(0, 0, 0, 1), DirectX::XMVectorSet(0, 1, 0, 0), clientWidth / clientHeight, DirectX::XMConvertToRadians(45), 0.1F, 100.0F);
 
 	if (!theEngine->initEngine(hInstance, hwnd, Engine::DIRECTX))
 	{
@@ -29,6 +30,7 @@ Game::Game(HWND hwnd, HINSTANCE hInstance, Engine* engine) :theEngine(engine)
 
 void Game::tick(const float deltaTime)
 {
+	//camera.yaw(DirectX::XMConvertToRadians(1));
 	theEngine->Update(deltaTime);
 }
 

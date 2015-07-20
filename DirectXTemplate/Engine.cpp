@@ -206,7 +206,7 @@ const BOOL Engine::initEngine(HINSTANCE& hInstance, HWND hwnd, const Rendertype 
 /**
 * Initialize the DirectX device and swap chain.
 */
-const int Engine::InitDirectX(const HINSTANCE hInstance, const BOOL vSync)
+int Engine::InitDirectX(const HINSTANCE hInstance, const BOOL vSync)
 {
 	// A window handle must have been created already.
 	assert(g_WindowHandle != 0);
@@ -235,8 +235,9 @@ const int Engine::InitDirectX(const HINSTANCE hInstance, const BOOL vSync)
 	swapChainDesc.Windowed = TRUE;
 
 
-	UINT createDeviceFlags = 0;
+	
 #if _DEBUG
+	UINT createDeviceFlags = 0;
 	createDeviceFlags = D3D11_CREATE_DEVICE_DEBUG;
 #endif
 
@@ -245,11 +246,11 @@ const int Engine::InitDirectX(const HINSTANCE hInstance, const BOOL vSync)
 	{
 		D3D_FEATURE_LEVEL_11_1,
 		D3D_FEATURE_LEVEL_11_0,
-		D3D_FEATURE_LEVEL_10_1,
-		D3D_FEATURE_LEVEL_10_0,
-		D3D_FEATURE_LEVEL_9_3,
-		D3D_FEATURE_LEVEL_9_2,
-		D3D_FEATURE_LEVEL_9_1
+		//D3D_FEATURE_LEVEL_10_1,
+		//D3D_FEATURE_LEVEL_10_0,
+		//D3D_FEATURE_LEVEL_9_3,
+		//D3D_FEATURE_LEVEL_9_2,
+		//D3D_FEATURE_LEVEL_9_1
 	};
 
 	// This will be the feature level that 
@@ -330,6 +331,10 @@ const int Engine::InitDirectX(const HINSTANCE hInstance, const BOOL vSync)
 	depthStencilStateDesc.StencilEnable = FALSE;
 
 	hr = g_d3dDevice->CreateDepthStencilState(&depthStencilStateDesc, &g_d3dDepthStencilState);
+	if (FAILED(hr))
+	{
+		return -1;
+	}
 
 	// Setup rasterizer state.
 	D3D11_RASTERIZER_DESC rasterizerDesc;
@@ -365,7 +370,7 @@ const int Engine::InitDirectX(const HINSTANCE hInstance, const BOOL vSync)
 	return 0;
 }
 
-const BOOL Engine::LoadContent()
+BOOL Engine::LoadContent()
 {
 	assert(g_d3dDevice);
 
@@ -457,14 +462,14 @@ const BOOL Engine::LoadContent()
 	}
 
 	// Setup the projection matrix.loa
-	RECT clientRect;
-	GetClientRect(g_WindowHandle, &clientRect);
+	/*RECT clientRect;
+	GetClientRect(g_WindowHandle, &clientRect);*/
 
 	// Compute the exact client dimensions.
 	// This is required for a correct projection matrix.
-	FLOAT clientWidth = static_cast<FLOAT>(clientRect.right - clientRect.left);
+	/*FLOAT clientWidth = static_cast<FLOAT>(clientRect.right - clientRect.left);
 	FLOAT clientHeight = static_cast<FLOAT>(clientRect.bottom - clientRect.top);
-
+*/
 	//g_ProjectionMatrix= XMMatrixPerspectiveFovLH(XMConvertToRadians(45.0f), clientWidth / clientHeight, 0.1f, 100.0f);
 	
 	//m_camera.update(
@@ -654,7 +659,7 @@ void Engine::Render()
 
 void Engine::setVSync(const BOOL  value)
 {
-	g_EnableVSync == value;
+	g_EnableVSync = value;
 }
 
 void Engine::showFPS(FLOAT deltaTime)

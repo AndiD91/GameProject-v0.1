@@ -93,10 +93,10 @@ private:
 
 	const DXGI_RATIONAL& QueryRefreshRate(const UINT screenWidth, const UINT screenHeight, const BOOL vsync);
 
-	const INT InitDirectX(const HINSTANCE hInstance, const BOOL vSync);
+	 INT InitDirectX(const HINSTANCE hInstance, const BOOL vSync);
 
 
-	const BOOL LoadContent();
+	 BOOL LoadContent();
 
 
 	// Get the latest profile for the specified shader type.
