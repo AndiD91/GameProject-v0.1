@@ -19,12 +19,18 @@
     <Filter Include="Data\Shaders">
       <UniqueIdentifier>{d5e823fb-c8db-4460-a591-45c05134a5e8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Math">
+      <UniqueIdentifier>{adc22a40-448d-4776-bdee-0abf8e4b74f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Math\Header Files">
+      <UniqueIdentifier>{77529c13-8006-430f-80b4-2d839307f3c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Math\Source Files">
+      <UniqueIdentifier>{3f4bd893-cd27-4959-b248-ae7c63ec964f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DirectXTemplatePCH.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Engine.cpp">
@@ -44,6 +50,21 @@
     </ClCompile>
     <ClCompile Include="Game.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Math.cpp">
+      <Filter>Header Files\Math\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Matrix4x4f.cpp">
+      <Filter>Header Files\Math\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Quaternion.cpp">
+      <Filter>Header Files\Math\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Vector2f.cpp">
+      <Filter>Header Files\Math\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Vector3f.cpp">
+      <Filter>Header Files\Math\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -73,6 +94,24 @@
     </ClInclude>
     <ClInclude Include="Game.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Math.h">
+      <Filter>Header Files\Math\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Matrix4x4f.h">
+      <Filter>Header Files\Math\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Quaternion.h">
+      <Filter>Header Files\Math\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Vector2f.h">
+      <Filter>Header Files\Math\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Vector3f.h">
+      <Filter>Header Files\Math\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\MathHelper.h">
+      <Filter>Header Files\Math\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

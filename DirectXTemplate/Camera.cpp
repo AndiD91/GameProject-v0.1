@@ -1,3 +1,4 @@
+#include "Math/Math.h"
 #include "DirectXTemplatePCH.h"
 #include "Camera.h"
 using namespace DirectX;

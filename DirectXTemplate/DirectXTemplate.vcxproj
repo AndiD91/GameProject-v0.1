@@ -99,8 +99,8 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>inc</AdditionalIncludeDirectories>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>DirectXTemplatePCH.h</PrecompiledHeaderFile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>Math/Math.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -155,12 +155,11 @@
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Material.cpp" />
-    <ClCompile Include="src\DirectXTemplatePCH.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-    </ClCompile>
+    <ClCompile Include="Math\Math.cpp" />
+    <ClCompile Include="Math\Matrix4x4f.cpp" />
+    <ClCompile Include="Math\Quaternion.cpp" />
+    <ClCompile Include="Math\Vector2f.cpp" />
+    <ClCompile Include="Math\Vector3f.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="Vertex.cpp" />
   </ItemGroup>
@@ -171,6 +170,12 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="inc\DirectXTemplatePCH.h" />
     <ClInclude Include="Material.h" />
+    <ClInclude Include="Math\MathHelper.h" />
+    <ClInclude Include="Math\Math.h" />
+    <ClInclude Include="Math\Matrix4x4f.h" />
+    <ClInclude Include="Math\Quaternion.h" />
+    <ClInclude Include="Math\Vector2f.h" />
+    <ClInclude Include="Math\Vector3f.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SystemDefs.h" />
     <ClInclude Include="Vertex.h" />

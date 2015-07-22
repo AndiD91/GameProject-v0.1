@@ -16,7 +16,8 @@ enum Rendertype
 	OPENGL,
 	DIRECTX,
 };
-const BOOL initEngine(HINSTANCE& hInstance, HWND hwnd,const Rendertype rendertype);
+
+BOOL initEngine(HINSTANCE& hInstance, HWND hwnd,const Rendertype rendertype);
 void Cleanup();
 void Clear(const FLOAT clearColor[4], const FLOAT clearDepth, const UINT8 clearStencil);
 void Update(const FLOAT deltaTime);
@@ -91,7 +92,7 @@ private:
 	std::vector<WORD> g_Indicies;
 
 
-	const DXGI_RATIONAL& QueryRefreshRate(const UINT screenWidth, const UINT screenHeight, const BOOL vsync);
+	DXGI_RATIONAL& QueryRefreshRate(const UINT screenWidth, const UINT screenHeight, const BOOL vsync);
 
 	 INT InitDirectX(const HINSTANCE hInstance, const BOOL vSync);
 

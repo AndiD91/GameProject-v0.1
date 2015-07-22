@@ -1,3 +1,4 @@
+#include "Math/Math.h"
 #include "DirectXTemplatePCH.h"
 #include "Game.h"
 
@@ -30,7 +31,7 @@ Game::Game(HWND hwnd, HINSTANCE hInstance, Engine* engine) :theEngine(engine)
 
 void Game::tick(const float deltaTime)
 {
-	//camera.yaw(DirectX::XMConvertToRadians(1));
+	//camera.yaw(0.0001);
 	theEngine->Update(deltaTime);
 }
 

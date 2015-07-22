@@ -1,3 +1,4 @@
+#include "Math/Math.h"
 #include <DirectXTemplatePCH.h>
 #include "Engine.h"
 #include <SimpleVertexShader.h>
@@ -74,7 +75,7 @@ Engine::~Engine()
 
 // This function was inspired by:
 // http://www.rastertek.com/dx11tut03.html
-const DXGI_RATIONAL& Engine::QueryRefreshRate(const UINT screenWidth, const UINT screenHeight, const BOOL vsync)
+DXGI_RATIONAL& Engine::QueryRefreshRate(const UINT screenWidth, const UINT screenHeight, const BOOL vsync)
 {
 	DXGI_RATIONAL refreshRate = { 0, 1 };
 	if (vsync)
@@ -162,7 +163,7 @@ const DXGI_RATIONAL& Engine::QueryRefreshRate(const UINT screenWidth, const UINT
 	return refreshRate;
 }
 
-const BOOL Engine::initEngine(HINSTANCE& hInstance, HWND hwnd, const Rendertype rendertype)
+BOOL Engine::initEngine(HINSTANCE& hInstance, HWND hwnd, const Rendertype rendertype)
 {
 	g_WindowHandle = hwnd;
 
@@ -461,20 +462,6 @@ BOOL Engine::LoadContent()
 		return false;
 	}
 
-	// Setup the projection matrix.loa
-	/*RECT clientRect;
-	GetClientRect(g_WindowHandle, &clientRect);*/
-
-	// Compute the exact client dimensions.
-	// This is required for a correct projection matrix.
-	/*FLOAT clientWidth = static_cast<FLOAT>(clientRect.right - clientRect.left);
-	FLOAT clientHeight = static_cast<FLOAT>(clientRect.bottom - clientRect.top);
-*/
-	//g_ProjectionMatrix= XMMatrixPerspectiveFovLH(XMConvertToRadians(45.0f), clientWidth / clientHeight, 0.1f, 100.0f);
-	
-	//m_camera.update(
-	//g_d3dDeviceContext->UpdateSubresource(g_d3dConstantBuffers[CB_Appliation], 0, nullptr, &m_camera.getProjectionMatrix(), 0, 0);
-
 	return true;
 }
 
@@ -593,7 +580,7 @@ void Engine::Update(const FLOAT deltaTime)
 
 	m_camera->update();
 	g_d3dDeviceContext->UpdateSubresource(g_d3dConstantBuffers[CB_Appliation], 0, nullptr, &m_camera->getProjectionMatrix(), 0, 0);
-	//g_ViewMatrix = XMMatrixLookAtLH(eyePosition, focusPoint, upDirection);
+	
 	g_d3dDeviceContext->UpdateSubresource(g_d3dConstantBuffers[CB_Frame], 0, nullptr, &m_camera->getViewMatrix(), 0, 0);
 
 
